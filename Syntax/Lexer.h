@@ -2,7 +2,7 @@
 #define LEXER_H
 
 #include<string>
-#include "SyntaxToken.h"
+#include "SyntaxNode.h"
 using namespace std;
 
 class Lexer
@@ -13,7 +13,7 @@ public:
 
 	int _position;
 	string _text;
-
+public:
 	char CurrentChar();
 	SyntaxToken NextToken();
 

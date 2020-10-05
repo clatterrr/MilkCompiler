@@ -140,16 +140,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="acompiler.cpp" />
-    <ClCompile Include="Lexer.cpp" />
-    <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="SyntaxNode.cpp" />
-    <ClCompile Include="SyntaxToken.cpp" />
+    <ClCompile Include="Syntax\Lexer.cpp" />
+    <ClCompile Include="Syntax\Parser.cpp" />
+    <ClCompile Include="Syntax\SyntaxNode.cpp" />
+    <ClCompile Include="Syntax\SyntaxToken.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Lexer.h" />
-    <ClInclude Include="Parser.h" />
-    <ClInclude Include="SyntaxNode.h" />
-    <ClInclude Include="SyntaxToken.h" />
+    <ClInclude Include="Syntax\Lexer.h" />
+    <ClInclude Include="Syntax\Parser.h" />
+    <ClInclude Include="Syntax\SyntaxNode.h" />
+    <ClInclude Include="Syntax\SyntaxToken.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

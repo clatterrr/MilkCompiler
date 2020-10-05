@@ -22,14 +22,15 @@ char Lexer::CurrentChar()
 
 SyntaxToken Lexer::NextToken()
 {
-	if (_position > _text.size())
+	if (_position >= _text.size())
 	{
-		return  SyntaxToken(EndOfFile, 0, _text);
+		return  SyntaxToken(SyntaxKind::EndOfFile, 0, _text);
 	}
 
 
 	int start = _position;
 	char Current = _text[_position];
+	
 	if (IsDigit(Current))//number 0~9
 	{
 		while (IsDigit(_text[_position]))
@@ -43,7 +44,7 @@ SyntaxToken Lexer::NextToken()
 		{
 			result = result * 10 + tempText[i] - '0';
 		}
-		return SyntaxToken(NumberToken, 0, _text, result);
+		return SyntaxToken(SyntaxKind::NumberToken, 0, tempText, result);
 	}
 
 	if (IsWhiteSpace(Current))
@@ -54,7 +55,7 @@ SyntaxToken Lexer::NextToken()
 		}
 		int length = _position - start;
 		string tempText(_text, start, length);
-		return SyntaxToken(WhitespaceToken, 0, _text);
+		return SyntaxToken(SyntaxKind::WhitespaceToken, 0, tempText);
 	}
 
 
@@ -66,23 +67,23 @@ SyntaxToken Lexer::NextToken()
 		}
 		int length = _position - start;
 		string tempText(_text, start, length);
-		return SyntaxToken(NumberToken, 0, _text);
+		return SyntaxToken(SyntaxKind::NumberToken, 0, tempText);
 	}
 
 	switch (Current)
 	{
 	case '+':
-		return  SyntaxToken(PlusToken, _position++, "+");
+		return  SyntaxToken(SyntaxKind::PlusToken, _position++, "+");
 	case '-':
-		return  SyntaxToken(MinusToken, _position++, "-");
+		return  SyntaxToken(SyntaxKind::MinusToken, _position++, "-");
 	case '*':
-		return  SyntaxToken(StarToken, _position++, "*");
+		return  SyntaxToken(SyntaxKind::StarToken, _position++, "*");
 	case '/':
-		return  SyntaxToken(SlashToken, _position++, "/");
+		return  SyntaxToken(SyntaxKind::SlashToken, _position++, "/");
 	case '(':
-		return  SyntaxToken(OpenParenthesisToken, _position++, "(");
+		return  SyntaxToken(SyntaxKind::OpenParenthesisToken, _position++, "(");
 	case ')':
-		return  SyntaxToken(CloseParenthesisToken, _position++, ")");
+		return  SyntaxToken(SyntaxKind::CloseParenthesisToken, _position++, ")");
 	}
 }
 
@@ -93,7 +94,7 @@ bool Lexer::IsDigit(char c)
 
 bool Lexer::IsWhiteSpace(char c)
 {
-	return c == '\0';
+	return c == 32;
 }
 
 bool Lexer::IsLetter(char c)

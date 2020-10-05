@@ -2,12 +2,18 @@
 //
 
 #include <stdio.h>
-#include "Lexer.h"
+#include "Syntax/Parser.h"
+
+void PrettyPrint(SyntaxNode node, string indent = " ")
+{
+
+}
 
 int main()
 {
-    Lexer lex("123abc");
-    lex.NextToken();
+    Parser pa("14 + 2 + 3");//这时候就把5个字符全部存为SynatexNode数组了，忽视掉了空格
+    ExpressionSyntax exp = pa.Parse();
+    PrettyPrint(exp);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

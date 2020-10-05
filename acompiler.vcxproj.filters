@@ -13,7 +13,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\NewFilter1">
+    <Filter Include="Header Files\Syntax">
+      <UniqueIdentifier>{f33d643a-e143-4ee5-a72e-9724ce9f0117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Syntax">
       <UniqueIdentifier>{949abbcc-a6bd-443d-b496-e245085f1a87}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -21,31 +24,31 @@
     <ClCompile Include="acompiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Lexer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Syntax\SyntaxToken.cpp">
+      <Filter>Source Files\Syntax</Filter>
     </ClCompile>
-    <ClCompile Include="SyntaxToken.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Syntax\SyntaxNode.cpp">
+      <Filter>Source Files\Syntax</Filter>
     </ClCompile>
-    <ClCompile Include="Parser.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Syntax\Parser.cpp">
+      <Filter>Source Files\Syntax</Filter>
     </ClCompile>
-    <ClCompile Include="SyntaxNode.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Syntax\Lexer.cpp">
+      <Filter>Source Files\Syntax</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Lexer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Syntax\SyntaxToken.h">
+      <Filter>Header Files\Syntax</Filter>
     </ClInclude>
-    <ClInclude Include="SyntaxToken.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Syntax\SyntaxNode.h">
+      <Filter>Header Files\Syntax</Filter>
     </ClInclude>
-    <ClInclude Include="Parser.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Syntax\Parser.h">
+      <Filter>Header Files\Syntax</Filter>
     </ClInclude>
-    <ClInclude Include="SyntaxNode.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Syntax\Lexer.h">
+      <Filter>Header Files\Syntax</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

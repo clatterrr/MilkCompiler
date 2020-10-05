@@ -16,6 +16,7 @@ class ExpressionSyntax : public SyntaxNode
 public:
 	ExpressionSyntax();
 	~ExpressionSyntax();
+	SyntaxToken _MainToken;
 };
 
 class NumberExp : public ExpressionSyntax
@@ -31,8 +32,14 @@ public:
 
 class BinaryExp : public ExpressionSyntax
 {
-	BinaryExp();
+public:
+	BinaryExp(ExpressionSyntax left, SyntaxToken operatorToken,ExpressionSyntax right);
 	~BinaryExp();
+	SyntaxKind _kind;
+	SyntaxToken _OperatorToken;
+	ExpressionSyntax _Left;
+	ExpressionSyntax _Right;
+	
 };
 #endif // ! SYNTAXNODE_H
 

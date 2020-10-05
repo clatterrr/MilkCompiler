@@ -4,7 +4,8 @@
 #include<string>
 using namespace std;
 
-enum  SyntaxKind
+
+enum class SyntaxKind
 {
 	NumberToken,
 	WhitespaceToken,
@@ -14,6 +15,7 @@ enum  SyntaxKind
 	SlashToken,
 	OpenParenthesisToken,
 	CloseParenthesisToken,
+	BinaryExpression,
 	EndOfFile
 };
 
