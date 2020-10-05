@@ -36,6 +36,12 @@
     <ClCompile Include="Syntax\Lexer.cpp">
       <Filter>Source Files\Syntax</Filter>
     </ClCompile>
+    <ClCompile Include="Syntax\SyntaxTree.cpp">
+      <Filter>Source Files\Syntax</Filter>
+    </ClCompile>
+    <ClCompile Include="Evaluator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syntax\SyntaxToken.h">
@@ -49,6 +55,12 @@
     </ClInclude>
     <ClInclude Include="Syntax\Lexer.h">
       <Filter>Header Files\Syntax</Filter>
+    </ClInclude>
+    <ClInclude Include="Syntax\SyntaxTree.h">
+      <Filter>Header Files\Syntax</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluator.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

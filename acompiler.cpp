@@ -2,7 +2,7 @@
 //
 
 #include <stdio.h>
-#include "Syntax/Parser.h"
+#include "Evaluator.h"
 
 void PrettyPrint(SyntaxNode node, string indent = " ")
 {
@@ -11,9 +11,12 @@ void PrettyPrint(SyntaxNode node, string indent = " ")
 
 int main()
 {
-    Parser pa("14 + 2 + 3");//这时候就把5个字符全部存为SynatexNode数组了，忽视掉了空格
-    ExpressionSyntax exp = pa.Parse();
-    PrettyPrint(exp);
+    Parser pa("14 + 2 - 3");//这时候就把5个字符全部存为SynatexNode数组了，忽视掉了空格
+    SyntaxTree tree = pa.ParseMe();
+    printf("exp is %s\n", tree._Root._MainToken._text.c_str());
+    Evaluator eva(tree._Root);
+   printf("%d\n",eva.EvaluatorExpression(tree._Root));
+    PrettyPrint(tree._Root);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

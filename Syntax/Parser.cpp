@@ -1,5 +1,4 @@
 #include "Parser.h"
-
 Parser::Parser(string text)
 {
 	Lexer lex(text);
@@ -33,41 +32,78 @@ SyntaxToken Parser::NextToken()
 	return cur;
 }
 
-ExpressionSyntax Parser::Parse()
+SyntaxTree Parser::ParseMe()
 {
-	ExpressionSyntax left = ParsePrimaryExpression();
+	BasicExp exp = ParseExpression();
+	SyntaxToken endOfFile = Match(SyntaxKind::EndOfFile);
+	return SyntaxTree(exp, endOfFile);
+}
 
 
+BasicExp Parser::ParseExpression()
+{
+	BasicExp left = ParsePrimaryExpression();
 	while (1)
 	{
+		if (_position >= _tokens.size())
+			break;
 		Current = Peek(0);//现在Current就是那个运算符
-		printf("left is %s\n", left._MainToken._text.c_str());
 
+		if (left._Kind == SyntaxKind::NumberToken)
+		{
+			printf("now left value is %d\n", left._MainToken._NumberValue);
+		}
+		else
+		{
+			printf("now op is %s\n", left._MainToken._text.c_str());
+		}
+		if (Current._kind == SyntaxKind::NumberToken)
+		{
+			printf("now Current value is %d\n", Current._NumberValue);
+		}
+		else
+		{
+			printf("now op is %s\n", Current._text.c_str());
+		}
 		if (Current._kind != SyntaxKind::PlusToken && Current._kind != SyntaxKind::MinusToken)
 			break;
-		SyntaxToken operatorToken = NextToken();
-		printf("operatorToken is %s\n", operatorToken._text.c_str());
-		Current = Peek(0);//推进到右边的数字
-		printf("current is %s\n", Current._text.c_str());
-		ExpressionSyntax right = ParsePrimaryExpression();
 
-		ExpressionSyntax ComputeRes =  BinaryExp(left, operatorToken, right);
-		 left = right;
+		SyntaxToken operatorToken = NextToken();
+
+		Current = Peek(0);//推进到右边的数字
+		if (Current._kind == SyntaxKind::NumberToken)
+		{
+			printf("now right value is %d\n", Current._NumberValue);
+		}
+		else
+		{
+			printf("now op is %s\n", Current._text.c_str());
+		}
+		BasicExp right = ParsePrimaryExpression();
+
+		left = BasicExp(left,left._Kind,operatorToken,right,right._Kind);
 
 	}
 	return left;
 }
 
-ExpressionSyntax Parser::ParsePrimaryExpression()
+BasicExp Parser::ParsePrimaryExpression()
 {
-	SyntaxToken numberToken = Match(SyntaxKind::NumberToken);
+	if (Current._kind == SyntaxKind::OpenParenthesisToken)
+	{
+		SyntaxToken left = NextToken();
+		ExpressionSyntax expression = ParseExpression();
+		SyntaxToken  right = Match(SyntaxKind::CloseParenthesisToken);
+		return BasicExp(left, expression, right);
+	}
 
-	return NumberExp(numberToken);
+	SyntaxToken numberToken = Match(SyntaxKind::NumberToken);
+	return BasicExp(numberToken);
 }
 
 SyntaxToken Parser::Match(SyntaxKind kind)
 {
 	if (Current._kind == kind)
 		return NextToken();
-	return SyntaxToken(kind, Current._position, nullptr);
+	return SyntaxToken(kind, Current._position, "");
 }

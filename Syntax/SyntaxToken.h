@@ -15,6 +15,7 @@ enum class SyntaxKind
 	SlashToken,
 	OpenParenthesisToken,
 	CloseParenthesisToken,
+	ThesisExpression,
 	BinaryExpression,
 	EndOfFile
 };
