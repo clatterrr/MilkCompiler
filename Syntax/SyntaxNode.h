@@ -15,7 +15,11 @@ class ExpressionSyntax : public SyntaxNode
 {
 public:
 	ExpressionSyntax();
+	//SingleNumberExpression _MainToken
 	ExpressionSyntax(SyntaxToken numberToken);
+	//_MainToken _MainExp
+	ExpressionSyntax(SyntaxToken UnaryOp, int right);
+	//BinaryExpression   _MianExp _MainToken _SubExp
 	ExpressionSyntax(int left, SyntaxToken operatorToken, int right);
 	ExpressionSyntax(SyntaxToken openThesisToken, int expression, SyntaxToken closeThesisToken);
 	~ExpressionSyntax();

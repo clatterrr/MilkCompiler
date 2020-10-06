@@ -84,6 +84,8 @@ SyntaxToken Lexer::NextToken()
 		return  SyntaxToken(SyntaxKind::OpenParenthesisToken, _position++, "(");
 	case ')':
 		return  SyntaxToken(SyntaxKind::CloseParenthesisToken, _position++, ")");
+	case '!':
+		return SyntaxToken(SyntaxKind::NOTToken, _position++, "!");
 	}
 }
 

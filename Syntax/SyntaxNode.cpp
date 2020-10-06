@@ -72,6 +72,13 @@ ExpressionSyntax::ExpressionSyntax(SyntaxToken numberToken)
     _MyKind = SyntaxKind::NumberToken;
 }
 
+ExpressionSyntax::ExpressionSyntax(SyntaxToken UnaryOp, int right)
+{
+    _MainToken = UnaryOp;
+    _MainExpIdx = right;
+    _MyKind = SyntaxKind::UnaryExpression;
+}
+
 ExpressionSyntax::ExpressionSyntax(int left, SyntaxToken operatorToken, int right)
 {
     _MainExpIdx = left;

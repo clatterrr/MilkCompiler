@@ -17,50 +17,6 @@ Parser::~Parser()
 {
 }
 
-void Parser::IntoStack()
-{
-	bool ParentThesisFlag = false;
-	for (int i = 0; i < _tokens.size(); i++)
-	{
-		switch (_tokens[i]._kind)
-		{
-		case SyntaxKind::NumberToken:_TokenStack.push_back(_tokens[i]);
-		case SyntaxKind::MinusToken:
-		case SyntaxKind::PlusToken:_TempOp.push(_tokens[i]);
-		case SyntaxKind::StarToken:
-		case SyntaxKind::SlashToken:
-		{
-			_TempOp.push(_tokens[i]);
-			if (ParentThesisFlag)break;
-			while (_TempOp.size())
-			{
-				_TokenStack.push_back(_TempOp.front());
-				_TempOp.pop();
-			}
-			break;
-		}
-		case SyntaxKind::OpenParenthesisToken:
-		{
-			_TempOp.push(_tokens[i]);
-			ParentThesisFlag = true;
-			break;
-		}
-		case SyntaxKind::CloseParenthesisToken:
-		{
-			while (_TempOp.front()._kind != SyntaxKind::OpenParenthesisToken)
-			{
-				_TokenStack.push_back(_TempOp.front());
-				_TempOp.pop();
-			}
-			_TempOp.pop();//弹出正括号
-			ParentThesisFlag = false;
-		}
-		default:
-			break;
-		}
-	}
-}
-
 SyntaxToken Parser::Peek(int offset)
 {
 	int index = _position + offset;
@@ -84,6 +40,66 @@ SyntaxTree Parser::ParseMe()
 	return tree;
 }
 
+ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end)
+{
+	printf("处理从%d到%d\n", start, end);
+	int nextOpIdx = start + 1;
+	ExpressionSyntax left;
+	printf("左侧未定义！\n");
+	switch (_tokens[start]._kind)
+	{
+	case SyntaxKind::NumberToken:
+	{
+		left = ExpressionSyntax(_tokens[start]);
+		PushTree(left);
+		printf("左侧的值为%d\n", left._MainToken._NumberValue);
+		break;
+	}
+	case SyntaxKind::NOTToken:
+	case SyntaxKind::PlusToken:
+	case SyntaxKind::MinusToken:
+	{
+		if (_tokens[start + 1]._kind == SyntaxKind::NumberToken)
+		{
+			printf("一元运算符右边是数字\n");
+			ExpressionSyntax num = ExpressionSyntax(_tokens[start + 1]);
+			PushTree(num);
+			left = ExpressionSyntax(_tokens[start], num._MyIdx);
+			nextOpIdx += 1;
+			PushTree(left);
+		}
+		else if (_tokens[start + 1]._kind == SyntaxKind::OpenParenthesisToken)
+		{
+			printf("一元运算符右边是括号\n");
+			ExpressionSyntax post = ParseFixedLenExpression(start + 1, end);
+			PushTree(post);
+			return ExpressionSyntax(_tokens[start], post._MyIdx);
+		}
+		break;
+	}
+	case SyntaxKind::OpenParenthesisToken:
+	{
+
+		int ParentTheses = 1;
+		for (int i = start + 1; i <= end; i++)
+		{
+			if (_tokens[i]._kind == SyntaxKind::OpenParenthesisToken)ParentTheses++;
+			if (_tokens[i]._kind == SyntaxKind::CloseParenthesisToken)ParentTheses--;
+			if (ParentTheses == 0)
+			{
+				left = ParseFixedLenExpression(start + 1, i - 1);
+				PushTree(left);
+				nextOpIdx = i + 1;
+				break;
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	return NextExpression(nextOpIdx, end, left);
+}
 
 //一律返回构造函数，返回之后才能算索引
 ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionSyntax left, SyntaxToken oper)
@@ -102,9 +118,28 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionS
 		PushTree(left);
 		break;
 	}
-
+	case SyntaxKind::NOTToken:
 	case SyntaxKind::PlusToken:
 	case SyntaxKind::MinusToken://负数，之后再讨论，现在先不做任何处理
+	{
+		if (_tokens[start + 1]._kind == SyntaxKind::NumberToken)
+		{
+			printf("一元运算符右边是数字\n");
+			ExpressionSyntax num = ExpressionSyntax(_tokens[start + 1]);
+			PushTree(num);
+			left = ExpressionSyntax(_tokens[start], num._MyIdx);
+			nextOpIdx += 1;
+			PushTree(left);
+		}
+		else if (_tokens[start + 1]._kind == SyntaxKind::OpenParenthesisToken)
+		{
+			printf("一元运算符右边是括号\n");
+			ExpressionSyntax post = ParseFixedLenExpression(start + 1, end);
+			PushTree(post);
+			return ExpressionSyntax(_tokens[start], post._MyIdx);
+		}
+		break;
+	}
 	case SyntaxKind::OpenParenthesisToken:
 	{
 		int ParentTheses = 1;
@@ -128,47 +163,6 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionS
 	}
 	return NextExpression(nextOpIdx, end, left);
 
-}
-
-ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end)
-{
-	printf("处理从%d到%d\n", start, end);
-	int nextOpIdx = start + 1;
-	ExpressionSyntax left;
-	printf("左侧未定义！\n");
-	switch (_tokens[start]._kind)
-	{
-	case SyntaxKind::NumberToken:
-	{
-		left = ExpressionSyntax(_tokens[start]); 
-		PushTree(left); 
-		printf("左侧的值为%d\n", left._MainToken._NumberValue);
-		break;
-	}
-	case SyntaxKind::PlusToken:
-	case SyntaxKind::MinusToken://负数，之后再讨论，现在先不做任何处理
-	case SyntaxKind::OpenParenthesisToken:
-	{
-
-		int ParentTheses = 1;
-		for (int i = start + 1; i <= end; i++)
-		{
-			if (_tokens[i]._kind == SyntaxKind::OpenParenthesisToken)ParentTheses++;
-			if (_tokens[i]._kind == SyntaxKind::CloseParenthesisToken)ParentTheses--;
-			if(ParentTheses == 0)
-			{
-				left = ParseFixedLenExpression(start + 1, i - 1);
-				PushTree(left);
-				nextOpIdx = i + 1;
-				break;
-			}
-		}
-		break;
-	}
-	default:
-		break;
-	}
-	return NextExpression(nextOpIdx, end,left);
 }
 
 ExpressionSyntax Parser::NextExpression(int nextOpIdx, int end, ExpressionSyntax left)

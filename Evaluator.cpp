@@ -41,6 +41,21 @@ int Evaluator::EvaluatorExpression(ExpressionSyntax node)
 
 		return node._MainToken._NumberValue;
 	}
+	else if (node._MyKind == SyntaxKind::UnaryExpression)
+	{
+		switch (node._MainToken._kind)
+		{
+		case SyntaxKind::PlusToken:return EvaluatorExpression(_Tree.ExpVec[node._MainExpIdx]);
+		case SyntaxKind::MinusToken:return -EvaluatorExpression(_Tree.ExpVec[node._MainExpIdx]);
+		case SyntaxKind::NOTToken:
+		{
+			int result = EvaluatorExpression(_Tree.ExpVec[node._MainExpIdx]);
+			return !result;
+		}
+		default:return 0;
+			break;
+		}
+	}
 		return 0;
 }
 

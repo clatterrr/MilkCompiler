@@ -17,7 +17,6 @@ using namespace std;
 		vector<SyntaxToken> _tokens;
 		vector<SyntaxToken> _TokenStack;
 		queue<SyntaxToken> _TempOp;
-		void IntoStack();
 		SyntaxToken Peek(int offset);
 		SyntaxToken NextToken();
 		SyntaxTree ParseMe();

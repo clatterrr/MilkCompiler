@@ -14,10 +14,12 @@ enum class SyntaxKind
 	MinusToken,
 	StarToken,
 	SlashToken,
+	NOTToken,
 	OpenParenthesisToken,
 	CloseParenthesisToken,
 	ThesisExpression,
 	BinaryExpression,
+	UnaryExpression,
 	EndOfFile
 };
 
