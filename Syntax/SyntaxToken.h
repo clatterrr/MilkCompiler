@@ -7,6 +7,7 @@ using namespace std;
 
 enum class SyntaxKind
 {
+	UnDefined,
 	NumberToken,
 	WhitespaceToken,
 	PlusToken,

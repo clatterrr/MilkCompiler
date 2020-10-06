@@ -16,7 +16,7 @@ class ExpressionSyntax : public SyntaxNode
 public:
 	ExpressionSyntax();
 	ExpressionSyntax(SyntaxToken numberToken);
-	ExpressionSyntax(int left, SyntaxKind leftkind, SyntaxToken operatorToken, int right, SyntaxKind rightkind);
+	ExpressionSyntax(int left, SyntaxToken operatorToken, int right);
 	ExpressionSyntax(SyntaxToken openThesisToken, int expression, SyntaxToken closeThesisToken);
 	~ExpressionSyntax();
 

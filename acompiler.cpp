@@ -11,7 +11,7 @@ void PrettyPrint(SyntaxNode node, string indent = " ")
 
 int main()
 {
-    Parser pa("14 * 2 - 3");//这时候就把5个字符全部存为SynatexNode数组了，忽视掉了空格
+    Parser pa("14 - 2 * 3");//这时候就把5个字符全部存为SynatexNode数组了，忽视掉了空格
     for (int i = 0; i < pa._tokens.size(); i++)
     {
         if (pa._tokens[i]._kind == SyntaxKind::NumberToken)

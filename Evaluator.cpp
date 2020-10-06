@@ -21,8 +21,10 @@ int Evaluator::EvaluatorExpression(ExpressionSyntax node)
 	int leftValue, rightValue;
 	if (node._MyKind == SyntaxKind::BinaryExpression)
 	{
+		printf("二元表达式！\n");
 		leftValue = EvaluatorExpression(_Tree.ExpVec[node._MainExpIdx]);
 		rightValue = EvaluatorExpression(_Tree.ExpVec[node._SubExpIdx]);
+		printf("左值为%d，右值为%d\n",leftValue,rightValue);
 		switch (node._MainToken._kind)
 		{
 		case SyntaxKind::PlusToken:return leftValue + rightValue;
@@ -35,6 +37,8 @@ int Evaluator::EvaluatorExpression(ExpressionSyntax node)
 	}
 	else if(node._MyKind == SyntaxKind::NumberToken)
 	{
+		printf("数字！%d\n", node._MainToken._NumberValue);
+
 		return node._MainToken._NumberValue;
 	}
 	

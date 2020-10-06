@@ -47,6 +47,7 @@ BinaryExp::~BinaryExp()
 
 ExpressionSyntax::ExpressionSyntax()
 {
+    _MyKind = SyntaxKind::UnDefined;
 }
 
 ExpressionSyntax::~ExpressionSyntax()
@@ -71,13 +72,11 @@ ExpressionSyntax::ExpressionSyntax(SyntaxToken numberToken)
     _MyKind = SyntaxKind::NumberToken;
 }
 
-ExpressionSyntax::ExpressionSyntax(int left, SyntaxKind leftkind, SyntaxToken operatorToken, int right,SyntaxKind rightkind)
+ExpressionSyntax::ExpressionSyntax(int left, SyntaxToken operatorToken, int right)
 {
     _MainExpIdx = left;
-    _MainExpKind = leftkind;
     _MainToken = operatorToken;
     _SubExpIdx = right;
-    _SubExpKind = rightkind;
     _MyKind = SyntaxKind::BinaryExpression;
 }
 

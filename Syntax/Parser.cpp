@@ -17,6 +17,50 @@ Parser::~Parser()
 {
 }
 
+void Parser::IntoStack()
+{
+	bool ParentThesisFlag = false;
+	for (int i = 0; i < _tokens.size(); i++)
+	{
+		switch (_tokens[i]._kind)
+		{
+		case SyntaxKind::NumberToken:_TokenStack.push_back(_tokens[i]);
+		case SyntaxKind::MinusToken:
+		case SyntaxKind::PlusToken:_TempOp.push(_tokens[i]);
+		case SyntaxKind::StarToken:
+		case SyntaxKind::SlashToken:
+		{
+			_TempOp.push(_tokens[i]);
+			if (ParentThesisFlag)break;
+			while (_TempOp.size())
+			{
+				_TokenStack.push_back(_TempOp.front());
+				_TempOp.pop();
+			}
+			break;
+		}
+		case SyntaxKind::OpenParenthesisToken:
+		{
+			_TempOp.push(_tokens[i]);
+			ParentThesisFlag = true;
+			break;
+		}
+		case SyntaxKind::CloseParenthesisToken:
+		{
+			while (_TempOp.front()._kind != SyntaxKind::OpenParenthesisToken)
+			{
+				_TokenStack.push_back(_TempOp.front());
+				_TempOp.pop();
+			}
+			_TempOp.pop();//弹出正括号
+			ParentThesisFlag = false;
+		}
+		default:
+			break;
+		}
+	}
+}
+
 SyntaxToken Parser::Peek(int offset)
 {
 	int index = _position + offset;
@@ -27,7 +71,7 @@ SyntaxToken Parser::Peek(int offset)
 
 SyntaxToken Parser::NextToken()
 {
-	
+
 	SyntaxToken cur = Peek(0);
 	++_position;
 	Current = Peek(0);
@@ -36,87 +80,118 @@ SyntaxToken Parser::NextToken()
 
 SyntaxTree Parser::ParseMe()
 {
-	SyntaxTree tree;
-	ExpressionSyntax left = ParseCurrentExpression();
-	while (1)
-	{
-		if (_position >= _tokens.size())
-			break;
-
-		if (Current._kind != SyntaxKind::PlusToken && Current._kind != SyntaxKind::MinusToken &&
-			Current._kind != SyntaxKind::StarToken && Current._kind != SyntaxKind::SlashToken)
-			break;
-		left._MyIdx = tree.ExpVec.size();
-		if (left._MyKind == SyntaxKind::NumberToken)
-		{
-			printf("now left value is %d\n", left._MainToken._NumberValue);
-		}
-		else
-		{
-			printf("now op is %s\n", left._MainToken._text.c_str());
-		}
-
-		tree.ExpVec.push_back(left);
-		SyntaxToken operatorToken = NextToken();
-		if (operatorToken._kind == SyntaxKind::NumberToken)
-		{
-			printf("now operatorToken value is %d\n", operatorToken._NumberValue);
-		}
-		else
-		{
-			printf("now op is %s\n", operatorToken._text.c_str());
-		}
-		ExpressionSyntax right = ParseCurrentExpression();
-		right._MyIdx = tree.ExpVec.size();
-		tree.ExpVec.push_back(right);
-		if (right._MyKind == SyntaxKind::NumberToken)
-		{
-			printf("now right value is %d\n", right._MainToken._NumberValue);
-		}
-		else
-		{
-			printf("now op is %s\n", right._MainToken._text.c_str());
-		}
-
-		ExpressionSyntax mainExp(left._MyIdx, left._MyKind, operatorToken, right._MyIdx, right._MyKind);
-		mainExp._MyIdx = tree.ExpVec.size();
-		tree.ExpVec.push_back(mainExp);
-		left = mainExp;
-	}
-	tree._Root = left;
+	tree._Root = ParseFixedLenExpression(0, _tokens.size() - 1);
 	return tree;
 }
 
-ExpressionSyntax Parser::ParseCurrentExpression()
+
+//一律返回构造函数，返回之后才能算索引
+ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionSyntax left, SyntaxToken oper)
 {
-	SyntaxToken cur = Peek(0);
-	_position++;
-	Current = Peek(0);
-	if (cur._kind == SyntaxKind::NumberToken)
+
+	int nextOpIdx = start + 1;
+	ExpressionSyntax temp;
+	printf("左侧已定义！\n");
+	switch (_tokens[start]._kind)
 	{
-		return ExpressionSyntax(cur);
+	case SyntaxKind::NumberToken://纯数字，那么就将合并成为表达式
+	{
+		temp = ExpressionSyntax(_tokens[start]); PushTree(temp);
+		printf("现在的临时值为%d\n", temp._MainToken._NumberValue);
+		left = ExpressionSyntax(left._MyIdx, oper, temp._MyIdx);
+		PushTree(left);
+		break;
+	}
+
+	case SyntaxKind::PlusToken:
+	case SyntaxKind::MinusToken://负数，之后再讨论，现在先不做任何处理
+	case SyntaxKind::OpenParenthesisToken:
+	{
+		for (int i = start; i < end; i++)
+		{
+			if (_tokens[i]._kind == SyntaxKind::CloseParenthesisToken)
+			{
+				temp = ParseFixedLenExpression(start, i);
+				PushTree(temp);
+				left = ExpressionSyntax(left._MyIdx, oper, temp._MyIdx);
+				PushTree(left);
+				nextOpIdx = i + 1;
+				break;
+			}
+		}
+		break;
+	}
+	default:break;
+	}
+	return NextExpression(nextOpIdx, end, left);
+
+}
+
+ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end)
+{
+	int nextOpIdx = start + 1;
+	ExpressionSyntax left;
+	printf("左侧未定义！\n");
+	switch (_tokens[start]._kind)
+	{
+	case SyntaxKind::NumberToken:
+	{
+		left = ExpressionSyntax(_tokens[start]); 
+		PushTree(left); 
+		printf("左侧的值为%d\n", left._MainToken._NumberValue);
+		break;
+	}
+	case SyntaxKind::PlusToken:
+	case SyntaxKind::MinusToken://负数，之后再讨论，现在先不做任何处理
+	case SyntaxKind::OpenParenthesisToken:
+	{
+		for (int i = start; i < end; i++)
+		{
+			if (_tokens[i]._kind == SyntaxKind::CloseParenthesisToken)
+			{
+				left = ParseFixedLenExpression(start + 1, i - 1);
+				PushTree(left);
+				nextOpIdx = i + 1;
+				break;
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	return NextExpression(nextOpIdx, end,left);
+}
+
+ExpressionSyntax Parser::NextExpression(int nextOpIdx, int end, ExpressionSyntax left)
+{
+	if (nextOpIdx >= end)
+	{
+		return left;
+	}
+	ExpressionSyntax right;
+	switch (_tokens[nextOpIdx]._kind)
+	{
+	case SyntaxKind::MinusToken:
+	case SyntaxKind::PlusToken:
+	{
+		right = ParseFixedLenExpression(nextOpIdx + 1, end);
+		PushTree(right);
+		printf("遇到一个加减！\n");
+		return ExpressionSyntax(left._MyIdx, _tokens[nextOpIdx], right._MyIdx);
+	}
+
+	case SyntaxKind::StarToken:
+	case SyntaxKind::SlashToken:		printf("遇到一个乘除！\n"); return ParseFixedLenExpression(nextOpIdx + 1, end, left, _tokens[nextOpIdx]);
+	default:
+		break;
 	}
 }
 
 
 
-ExpressionSyntax Parser::ParsePrimaryExpression()
+void Parser::PushTree(ExpressionSyntax &exp)
 {
-	if (Current._kind == SyntaxKind::OpenParenthesisToken)
-	{
-		SyntaxToken left = NextToken();
-	//	ExpressionSyntax expression = ParseExpression();
-		SyntaxToken  right = Match(SyntaxKind::CloseParenthesisToken);
-		//return ExpressionSyntax(left, expression, right);
-	}
-
-	SyntaxToken numberToken = Match(SyntaxKind::NumberToken);
-	return ExpressionSyntax(numberToken);
-}
-
-SyntaxToken Parser::Match(SyntaxKind kind)
-{
-	if (Current._kind == kind)
-		return NextToken();
-	return SyntaxToken(kind, Current._position, " ");
+	exp._MyIdx = tree.ExpVec.size();
+	tree.ExpVec.push_back(exp);
 }
