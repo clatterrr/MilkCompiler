@@ -17,8 +17,8 @@ using namespace std;
 		SyntaxToken Peek(int offset);
 		SyntaxToken NextToken();
 		SyntaxTree ParseMe();
-		BasicExp ParseExpression();
-		BasicExp ParsePrimaryExpression();
+		ExpressionSyntax ParseCurrentExpression();
+		ExpressionSyntax ParsePrimaryExpression();
 		SyntaxToken Match(SyntaxKind kind);
 
 		int _position;

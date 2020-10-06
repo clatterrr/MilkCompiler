@@ -15,29 +15,26 @@ class ExpressionSyntax : public SyntaxNode
 {
 public:
 	ExpressionSyntax();
+	ExpressionSyntax(SyntaxToken numberToken);
+	ExpressionSyntax(int left, SyntaxKind leftkind, SyntaxToken operatorToken, int right, SyntaxKind rightkind);
+	ExpressionSyntax(SyntaxToken openThesisToken, int expression, SyntaxToken closeThesisToken);
 	~ExpressionSyntax();
 
-	SyntaxKind _Kind;
-};
-
-class BasicExp:public ExpressionSyntax
-{
-public:
-	BasicExp();//default
-	BasicExp(ExpressionSyntax aExp, SyntaxKind kind);
-	BasicExp(SyntaxToken numberToken);
-	BasicExp(ExpressionSyntax left, SyntaxKind leftkind, SyntaxToken operatorToken, ExpressionSyntax right, SyntaxKind rightkind);
-	BasicExp(SyntaxToken openThesisToken, ExpressionSyntax expression, SyntaxToken closeThesisToken);
-	~BasicExp();
-
+	SyntaxKind _MyKind;
+	int _MyIdx;
 	SyntaxToken _MainToken;
 	SyntaxToken _SubToken;
-	ExpressionSyntax _MainExpression;
+	//傻逼链表次次报错，老子不用也罢
+	//ExpressionSyntax* _MainExpression;
+	int _MainExpIdx;
 	SyntaxKind _MainExpKind;
-	ExpressionSyntax _SubExpression;
+	//ExpressionSyntax* _SubExpression;
+	int _SubExpIdx;
 	SyntaxKind _SubExpKind;
 	int Value;
 };
+
+
 
 //单个数字
 class NumberExp : public ExpressionSyntax

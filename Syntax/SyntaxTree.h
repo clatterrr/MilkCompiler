@@ -3,15 +3,18 @@
 
 #ifndef  SYNTAXTREE_H
 #define SYNTAXTREE_H
+#include <vector>
 #include "Lexer.h"
 
 	class SyntaxTree
 	{
 	public:
-		SyntaxTree(BasicExp root, SyntaxToken endOfFileToken);
+		SyntaxTree();
+		SyntaxTree(ExpressionSyntax root, SyntaxToken endOfFileToken);
 		~SyntaxTree();
-		BasicExp _Root;
+		ExpressionSyntax _Root;
 		SyntaxToken _EndOfFileToken;
+		vector<ExpressionSyntax> ExpVec;
 	};
 
 

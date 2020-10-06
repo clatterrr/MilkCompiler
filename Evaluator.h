@@ -4,12 +4,13 @@
 class Evaluator
 {
 public:
-	Evaluator(BasicExp root);
+	Evaluator(SyntaxTree tree);
 	~Evaluator();
-	BasicExp _Root;
+	ExpressionSyntax _Root;
+	SyntaxTree _Tree;
 	int Evaluate();
 
-	int EvaluatorExpression(BasicExp node);
+	int EvaluatorExpression(ExpressionSyntax node);
 };
 
 #endif // !EVALUATOR_H

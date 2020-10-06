@@ -27,29 +27,27 @@ SyntaxToken Parser::Peek(int offset)
 
 SyntaxToken Parser::NextToken()
 {
-	SyntaxToken cur = Current;
+	
+	SyntaxToken cur = Peek(0);
 	++_position;
+	Current = Peek(0);
 	return cur;
 }
 
 SyntaxTree Parser::ParseMe()
 {
-	BasicExp exp = ParseExpression();
-	SyntaxToken endOfFile = Match(SyntaxKind::EndOfFile);
-	return SyntaxTree(exp, endOfFile);
-}
-
-
-BasicExp Parser::ParseExpression()
-{
-	BasicExp left = ParsePrimaryExpression();
+	SyntaxTree tree;
+	ExpressionSyntax left = ParseCurrentExpression();
 	while (1)
 	{
 		if (_position >= _tokens.size())
 			break;
-		Current = Peek(0);//现在Current就是那个运算符
 
-		if (left._Kind == SyntaxKind::NumberToken)
+		if (Current._kind != SyntaxKind::PlusToken && Current._kind != SyntaxKind::MinusToken &&
+			Current._kind != SyntaxKind::StarToken && Current._kind != SyntaxKind::SlashToken)
+			break;
+		left._MyIdx = tree.ExpVec.size();
+		if (left._MyKind == SyntaxKind::NumberToken)
 		{
 			printf("now left value is %d\n", left._MainToken._NumberValue);
 		}
@@ -57,53 +55,68 @@ BasicExp Parser::ParseExpression()
 		{
 			printf("now op is %s\n", left._MainToken._text.c_str());
 		}
-		if (Current._kind == SyntaxKind::NumberToken)
-		{
-			printf("now Current value is %d\n", Current._NumberValue);
-		}
-		else
-		{
-			printf("now op is %s\n", Current._text.c_str());
-		}
-		if (Current._kind != SyntaxKind::PlusToken && Current._kind != SyntaxKind::MinusToken)
-			break;
 
+		tree.ExpVec.push_back(left);
 		SyntaxToken operatorToken = NextToken();
-
-		Current = Peek(0);//推进到右边的数字
-		if (Current._kind == SyntaxKind::NumberToken)
+		if (operatorToken._kind == SyntaxKind::NumberToken)
 		{
-			printf("now right value is %d\n", Current._NumberValue);
+			printf("now operatorToken value is %d\n", operatorToken._NumberValue);
 		}
 		else
 		{
-			printf("now op is %s\n", Current._text.c_str());
+			printf("now op is %s\n", operatorToken._text.c_str());
 		}
-		BasicExp right = ParsePrimaryExpression();
+		ExpressionSyntax right = ParseCurrentExpression();
+		right._MyIdx = tree.ExpVec.size();
+		tree.ExpVec.push_back(right);
+		if (right._MyKind == SyntaxKind::NumberToken)
+		{
+			printf("now right value is %d\n", right._MainToken._NumberValue);
+		}
+		else
+		{
+			printf("now op is %s\n", right._MainToken._text.c_str());
+		}
 
-		left = BasicExp(left,left._Kind,operatorToken,right,right._Kind);
-
+		ExpressionSyntax mainExp(left._MyIdx, left._MyKind, operatorToken, right._MyIdx, right._MyKind);
+		mainExp._MyIdx = tree.ExpVec.size();
+		tree.ExpVec.push_back(mainExp);
+		left = mainExp;
 	}
-	return left;
+	tree._Root = left;
+	return tree;
 }
 
-BasicExp Parser::ParsePrimaryExpression()
+ExpressionSyntax Parser::ParseCurrentExpression()
+{
+	SyntaxToken cur = Peek(0);
+	_position++;
+	Current = Peek(0);
+	if (cur._kind == SyntaxKind::NumberToken)
+	{
+		return ExpressionSyntax(cur);
+	}
+}
+
+
+
+ExpressionSyntax Parser::ParsePrimaryExpression()
 {
 	if (Current._kind == SyntaxKind::OpenParenthesisToken)
 	{
 		SyntaxToken left = NextToken();
-		ExpressionSyntax expression = ParseExpression();
+	//	ExpressionSyntax expression = ParseExpression();
 		SyntaxToken  right = Match(SyntaxKind::CloseParenthesisToken);
-		return BasicExp(left, expression, right);
+		//return ExpressionSyntax(left, expression, right);
 	}
 
 	SyntaxToken numberToken = Match(SyntaxKind::NumberToken);
-	return BasicExp(numberToken);
+	return ExpressionSyntax(numberToken);
 }
 
 SyntaxToken Parser::Match(SyntaxKind kind)
 {
 	if (Current._kind == kind)
 		return NextToken();
-	return SyntaxToken(kind, Current._position, "");
+	return SyntaxToken(kind, Current._position, " ");
 }

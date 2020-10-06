@@ -1,5 +1,8 @@
 #include "SyntaxTree.h"
-SyntaxTree::SyntaxTree(BasicExp root, SyntaxToken endOfFileToken)
+SyntaxTree::SyntaxTree()
+{
+}
+SyntaxTree::SyntaxTree(ExpressionSyntax root, SyntaxToken endOfFileToken)
 {
   
     _Root = root;

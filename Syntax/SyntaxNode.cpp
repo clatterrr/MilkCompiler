@@ -64,40 +64,28 @@ ThesisExp::~ThesisExp()
 {
 }
 
-BasicExp::BasicExp()
-{
-}
 
-BasicExp::BasicExp(ExpressionSyntax aExp, SyntaxKind kind)
-{
-    _MainExpression = aExp;
-    _Kind = kind;
-}
-
-BasicExp::BasicExp(SyntaxToken numberToken)
+ExpressionSyntax::ExpressionSyntax(SyntaxToken numberToken)
 {
     _MainToken = numberToken;
-    _Kind = SyntaxKind::NumberToken;
+    _MyKind = SyntaxKind::NumberToken;
 }
 
-BasicExp::BasicExp(ExpressionSyntax left, SyntaxKind leftkind, SyntaxToken operatorToken, ExpressionSyntax right,SyntaxKind rightkind)
+ExpressionSyntax::ExpressionSyntax(int left, SyntaxKind leftkind, SyntaxToken operatorToken, int right,SyntaxKind rightkind)
 {
-    _MainExpression = left;
+    _MainExpIdx = left;
     _MainExpKind = leftkind;
     _MainToken = operatorToken;
-    _SubExpression = right;
+    _SubExpIdx = right;
     _SubExpKind = rightkind;
-    _Kind = SyntaxKind::BinaryExpression;
+    _MyKind = SyntaxKind::BinaryExpression;
 }
 
-BasicExp::BasicExp(SyntaxToken openThesisToken, ExpressionSyntax expression, SyntaxToken closeThesisToken)
+ExpressionSyntax::ExpressionSyntax(SyntaxToken openThesisToken, int expression, SyntaxToken closeThesisToken)
 {
     _MainToken = openThesisToken;
-    _MainExpression = expression;
+    _MainExpIdx = expression;
     _SubToken = closeThesisToken;
-    _Kind = SyntaxKind::ThesisExpression;
+    _MyKind = SyntaxKind::ThesisExpression;
 }
 
-BasicExp::~BasicExp()
-{
-}

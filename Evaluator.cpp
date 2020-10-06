@@ -1,8 +1,9 @@
 #include "Evaluator.h"
+#include <iostream>
 
-Evaluator::Evaluator(BasicExp root)
+Evaluator::Evaluator(SyntaxTree tree)
 {
-	_Root = root;
+	_Tree = tree;
 	
 }
 
@@ -12,22 +13,31 @@ Evaluator::~Evaluator()
 
 int Evaluator::Evaluate()
 {
-	return 0;
+	return EvaluatorExpression(_Tree._Root);
 }
 
-int Evaluator::EvaluatorExpression(BasicExp node)
+int Evaluator::EvaluatorExpression(ExpressionSyntax node)
 {
 	int leftValue, rightValue;
-	printf("now main token is %s\n", node._MainToken._text.c_str());
-	if (node._Kind == SyntaxKind::BinaryExpression)
+	if (node._MyKind == SyntaxKind::BinaryExpression)
 	{
-		leftValue = EvaluatorExpression(BasicExp(node._MainExpression, node._MainExpKind));
+		leftValue = EvaluatorExpression(_Tree.ExpVec[node._MainExpIdx]);
+		rightValue = EvaluatorExpression(_Tree.ExpVec[node._SubExpIdx]);
+		switch (node._MainToken._kind)
+		{
+		case SyntaxKind::PlusToken:return leftValue + rightValue;
+		case SyntaxKind::MinusToken:return leftValue - rightValue;
+		case SyntaxKind::StarToken:return leftValue * rightValue;
+		case SyntaxKind::SlashToken:return leftValue / rightValue;
+		default:return 0;
+			break;
+		}
 	}
-	else if (node._Kind == SyntaxKind::NumberToken)
+	else if(node._MyKind == SyntaxKind::NumberToken)
 	{
-		printf("now value = %d\n", node._MainToken._NumberValue);
 		return node._MainToken._NumberValue;
 	}
+	
 
 	/*
 	if (node->_Left._kind == SyntaxKind::NumberToken)
