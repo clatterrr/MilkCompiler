@@ -88,7 +88,7 @@ SyntaxTree Parser::ParseMe()
 //一律返回构造函数，返回之后才能算索引
 ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionSyntax left, SyntaxToken oper)
 {
-
+	printf("处理从%d到%d\n", start, end);
 	int nextOpIdx = start + 1;
 	ExpressionSyntax temp;
 	printf("左侧已定义！\n");
@@ -107,11 +107,14 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionS
 	case SyntaxKind::MinusToken://负数，之后再讨论，现在先不做任何处理
 	case SyntaxKind::OpenParenthesisToken:
 	{
-		for (int i = start; i < end; i++)
+		int ParentTheses = 1;
+		for (int i = start + 1; i <= end; i++)
 		{
-			if (_tokens[i]._kind == SyntaxKind::CloseParenthesisToken)
+			if (_tokens[i]._kind == SyntaxKind::OpenParenthesisToken)ParentTheses++;
+			if (_tokens[i]._kind == SyntaxKind::CloseParenthesisToken)ParentTheses--;
+			if (ParentTheses == 0)
 			{
-				temp = ParseFixedLenExpression(start, i);
+				temp = ParseFixedLenExpression(start + 1, i -1);
 				PushTree(temp);
 				left = ExpressionSyntax(left._MyIdx, oper, temp._MyIdx);
 				PushTree(left);
@@ -129,6 +132,7 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionS
 
 ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end)
 {
+	printf("处理从%d到%d\n", start, end);
 	int nextOpIdx = start + 1;
 	ExpressionSyntax left;
 	printf("左侧未定义！\n");
@@ -145,9 +149,13 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end)
 	case SyntaxKind::MinusToken://负数，之后再讨论，现在先不做任何处理
 	case SyntaxKind::OpenParenthesisToken:
 	{
-		for (int i = start; i < end; i++)
+
+		int ParentTheses = 1;
+		for (int i = start + 1; i <= end; i++)
 		{
-			if (_tokens[i]._kind == SyntaxKind::CloseParenthesisToken)
+			if (_tokens[i]._kind == SyntaxKind::OpenParenthesisToken)ParentTheses++;
+			if (_tokens[i]._kind == SyntaxKind::CloseParenthesisToken)ParentTheses--;
+			if(ParentTheses == 0)
 			{
 				left = ParseFixedLenExpression(start + 1, i - 1);
 				PushTree(left);
