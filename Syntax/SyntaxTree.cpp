@@ -2,7 +2,7 @@
 SyntaxTree::SyntaxTree()
 {
 }
-SyntaxTree::SyntaxTree(ExpressionSyntax root, SyntaxToken endOfFileToken)
+SyntaxTree::SyntaxTree(StatementSyntax root, SyntaxToken endOfFileToken)
 {
   
     _Root = root;

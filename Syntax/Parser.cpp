@@ -36,10 +36,47 @@ SyntaxToken Parser::NextToken()
 
 SyntaxTree Parser::ParseMe()
 {
-	tree._Root = ParseFixedLenExpression(0, _tokens.size() - 1);
+	tree._Root = ParseEntireLineAsStatement();
 	return tree;
 }
 
+StatementSyntax Parser::ParseEntireLineAsStatement()
+{
+	switch (_tokens[0]._kind)
+	{
+	case SyntaxKind::IntKeyWord:
+	{
+		ExpressionSyntax mainExpOfTheLine = ParseFixedLenExpression(3, _tokens.size()-1);
+		PushTree(mainExpOfTheLine);
+		return StatementSyntax(_tokens[0], _tokens[1], _tokens[2], mainExpOfTheLine._MyIdx);
+	}
+	case SyntaxKind::IdentifierToken:
+	{
+		ExpressionSyntax mainExpOfTheLine = ParseFixedLenExpression(2, _tokens.size() - 1);
+		PushTree(mainExpOfTheLine);
+		return StatementSyntax(_tokens[0], _tokens[1], mainExpOfTheLine._MyIdx);
+	}
+	case SyntaxKind::PrintKeyWord:
+	{
+		//因为print有一前一后两个括号
+		ExpressionSyntax mainExpOfTheLine = ParseFixedLenExpression(2, _tokens.size() - 2);
+		PushTree(mainExpOfTheLine);
+		return StatementSyntax(_tokens[0], mainExpOfTheLine._MyIdx);
+	}
+	case SyntaxKind::IfKeyWord:
+	{
+		//因为If有一前一后两个括号
+		ExpressionSyntax mainExpOfTheLine = ParseFixedLenExpression(2, _tokens.size() - 2);
+		PushTree(mainExpOfTheLine);
+		return StatementSyntax(_tokens[0], mainExpOfTheLine._MyIdx);
+	}
+	default:
+		break;
+	}
+	return StatementSyntax();
+}
+
+//把这一行解析为Statement，揪出一个根作为_Root
 ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end)
 {
 	printf("处理从%d到%d\n", start, end);
@@ -52,7 +89,7 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end)
 	{
 		left = ExpressionSyntax(_tokens[start]);
 		PushTree(left);
-		printf("左侧的值为%d\n", left._MainToken._NumberValue);
+		printf("左侧的值为%d\n", left._Token0._NumberValue);
 		break;
 	}
 	case SyntaxKind::NOTToken:
@@ -95,9 +132,18 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end)
 		}
 		break;
 	}
+	case SyntaxKind::IdentifierToken:
+	{
+		left = ExpressionSyntax(_tokens[start]);
+		PushTree(left);
+		printf("左侧的文本为%s\n", left._Token0._text.c_str());
+		break;
+	}
 	default:
 		break;
 	}
+	if (nextOpIdx > end)
+		return left;
 	return NextExpression(nextOpIdx, end, left);
 }
 
@@ -113,7 +159,7 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionS
 	case SyntaxKind::NumberToken://纯数字，那么就将合并成为表达式
 	{
 		temp = ExpressionSyntax(_tokens[start]); PushTree(temp);
-		printf("现在的临时值为%d\n", temp._MainToken._NumberValue);
+		printf("现在的临时值为%d\n", temp._Token0._NumberValue);
 		left = ExpressionSyntax(left._MyIdx, oper, temp._MyIdx);
 		PushTree(left);
 		break;
@@ -159,8 +205,17 @@ ExpressionSyntax Parser::ParseFixedLenExpression(int start, int end, ExpressionS
 		}
 		break;
 	}
+	case SyntaxKind::IdentifierToken:
+	{
+		left = ExpressionSyntax(_tokens[start]);
+		PushTree(left);
+		printf("左侧的文本为%s\n", left._Token0._text.c_str());
+		break;
+	}
 	default:break;
 	}
+	if (nextOpIdx > end)
+		return left;
 	return NextExpression(nextOpIdx, end, left);
 
 }

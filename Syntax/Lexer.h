@@ -20,6 +20,7 @@ public:
 	bool IsDigit(char c);
 	bool IsWhiteSpace(char c);
 	bool IsLetter(char c);
+	SyntaxKind GetTextKind(string str);
 
 };
 

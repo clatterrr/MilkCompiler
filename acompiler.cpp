@@ -4,31 +4,45 @@
 #include <stdio.h>
 #include "Evaluator.h"
 
-void PrettyPrint(SyntaxNode node, string indent = " ")
-{
-
-}
 
 int main()
 {
-    
-    //Parser pa("! 0 + 3");
-    //Parser pa("14 - 3 * 2");
-   // Parser pa("(12 + 2)*6");
-    Parser pa("11 + 16 - !33");
-    for (int i = 0; i < pa._tokens.size(); i++)
+    vector<string> str;
+    str.resize(2);
+    str[0] = "int a = 10 + 5";
+    str[1] = "print(a)";
+
+    Evaluator GlobalEvluator;
+
+
+    int LineIdx = 0;
+    while (true)
     {
-        if (pa._tokens[i]._kind == SyntaxKind::NumberToken)
+        if (LineIdx >= str.size())
+            break;
+
+        Parser pa(str[LineIdx]);//现在这个Parser先放在SyntaxTree的外面，不知道Minsk的为什么要放外面
+
+        for (int i = 0; i < pa._tokens.size(); i++)
         {
-            printf("Number Value %d\n", pa._tokens[i]._NumberValue);
+            if (pa._tokens[i]._kind == SyntaxKind::NumberToken)
+            {
+                printf("Number Value %d\n", pa._tokens[i]._NumberValue);
+            }
+            else
+            {
+                printf("text Value %s\n", pa._tokens[i]._text.c_str());
+            }
         }
-        else
+        SyntaxTree tree = pa.ParseMe();
+        GlobalEvluator.Evaluate(tree);
+        if (GlobalEvluator._ShouldOutput)
         {
-            printf("text Value %s\n", pa._tokens[i]._text.c_str());
+            printf("MilkCompiler OutPut : %d\n", GlobalEvluator._ResultOutput);
         }
+        LineIdx++;
+   
     }
 
-    SyntaxTree tree = pa.ParseMe();
-    Evaluator eva(tree);
-    printf("Final Result = %d",eva.Evaluate());
+    
 }

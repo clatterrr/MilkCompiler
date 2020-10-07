@@ -2,32 +2,15 @@
 #define SYNTAXTOKEN_H
 
 #include<string>
+#include "SyntaxKind.h"
 using namespace std;
 
-
-enum class SyntaxKind
-{
-	UnDefined,
-	NumberToken,
-	WhitespaceToken,
-	PlusToken,
-	MinusToken,
-	StarToken,
-	SlashToken,
-	NOTToken,
-	OpenParenthesisToken,
-	CloseParenthesisToken,
-	ThesisExpression,
-	BinaryExpression,
-	UnaryExpression,
-	EndOfFile
-};
 
 class SyntaxToken
 {
 public:
 	SyntaxToken() = default;
-	SyntaxToken(SyntaxKind kind,int position,string text,int value);
+	SyntaxToken(SyntaxKind kind,int position,int value);
 	SyntaxToken(SyntaxKind kind, int position, string text);
 	~SyntaxToken();
 

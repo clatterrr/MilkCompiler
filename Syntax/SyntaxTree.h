@@ -10,11 +10,12 @@
 	{
 	public:
 		SyntaxTree();
-		SyntaxTree(ExpressionSyntax root, SyntaxToken endOfFileToken);
+		SyntaxTree(StatementSyntax root, SyntaxToken endOfFileToken);
 		~SyntaxTree();
-		ExpressionSyntax _Root;
+		StatementSyntax _Root;
 		SyntaxToken _EndOfFileToken;
 		vector<ExpressionSyntax> ExpVec;
+		vector<StatementSyntax> StateVec;
 	};
 
 

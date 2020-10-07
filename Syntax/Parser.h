@@ -15,11 +15,10 @@ using namespace std;
 		~Parser();
 
 		vector<SyntaxToken> _tokens;
-		vector<SyntaxToken> _TokenStack;
-		queue<SyntaxToken> _TempOp;
 		SyntaxToken Peek(int offset);
 		SyntaxToken NextToken();
 		SyntaxTree ParseMe();
+		StatementSyntax ParseEntireLineAsStatement();
 		ExpressionSyntax ParseFixedLenExpression(int start, int end, ExpressionSyntax left, SyntaxToken oper);
 		ExpressionSyntax ParseFixedLenExpression(int start, int end);
 		ExpressionSyntax NextExpression(int nextOpIdx, int end, ExpressionSyntax left);

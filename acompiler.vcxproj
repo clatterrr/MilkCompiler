@@ -141,6 +141,8 @@
   <ItemGroup>
     <ClCompile Include="acompiler.cpp" />
     <ClCompile Include="Evaluator.cpp" />
+    <ClCompile Include="Symbol\Symbol.cpp" />
+    <ClCompile Include="Symbol\SymbolTable.cpp" />
     <ClCompile Include="Syntax\Lexer.cpp" />
     <ClCompile Include="Syntax\Parser.cpp" />
     <ClCompile Include="Syntax\SyntaxNode.cpp" />
@@ -149,8 +151,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Evaluator.h" />
+    <ClInclude Include="Symbol\Symbol.h" />
+    <ClInclude Include="Symbol\SymbolTable.h" />
     <ClInclude Include="Syntax\Lexer.h" />
     <ClInclude Include="Syntax\Parser.h" />
+    <ClInclude Include="Syntax\SyntaxKind.h" />
     <ClInclude Include="Syntax\SyntaxNode.h" />
     <ClInclude Include="Syntax\SyntaxToken.h" />
     <ClInclude Include="Syntax\SyntaxTree.h" />

@@ -8,90 +8,88 @@ SyntaxNode::~SyntaxNode()
 {
 }
 
-SyntaxKind SyntaxNode::GetKind()
-{
-    return SyntaxKind();
-}
-
-NumberExp::NumberExp(SyntaxToken numberToken)
-{
-    _NumberToken = numberToken;
-}
-
-NumberExp::~NumberExp()
-{
-}
-
-BinaryExp::BinaryExp()
-{
-}
-
-BinaryExp::BinaryExp(ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right)
-{
-    _Left = left;
-    _Right = right;
-    _OperatorToken = operatorToken;
-
-}
-
-void BinaryExp::CreateBinaryExp(ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right)
-{
-    _Left = left;
-    _Right = right;
-    _OperatorToken = operatorToken;
-}
-
-BinaryExp::~BinaryExp()
-{
-}
 
 ExpressionSyntax::ExpressionSyntax()
 {
-    _MyKind = SyntaxKind::UnDefined;
+}
+
+ExpressionSyntax::ExpressionSyntax(SyntaxToken numberToken)
+{
+    _Token0 = numberToken;
+    if (numberToken._kind == SyntaxKind::NumberToken)
+    {
+        _MyKind = SyntaxKind::NumberToken;
+    }
+    else
+    {
+        _MyKind = SyntaxKind::IdentifierToken;
+    }
+    
+}
+
+ExpressionSyntax::ExpressionSyntax(SyntaxToken UnaryOp, int right)
+{
+    _Token0 = UnaryOp;
+    _ExpIdx0 = right;
+    _MyKind = SyntaxKind::UnaryExpression;
+}
+
+ExpressionSyntax::ExpressionSyntax(int left, SyntaxToken operatorToken, int right)
+{
+    _ExpIdx0 = left;
+    _Token0 = operatorToken;
+    _ExpIdx1 = right;
+    _MyKind = SyntaxKind::BinaryExpression;
+}
+
+ExpressionSyntax::ExpressionSyntax(SyntaxToken openThesisToken, int expression, SyntaxToken closeThesisToken)
+{
+    _Token0 = openThesisToken;
+    _ExpIdx0 = expression;
+    _Token1 = closeThesisToken;
+    _MyKind = SyntaxKind::ThesisExpression;
 }
 
 ExpressionSyntax::~ExpressionSyntax()
 {
 }
 
-ThesisExp::ThesisExp(SyntaxToken openThesisToken, ExpressionSyntax expression, SyntaxToken closeThesisToken)
-{
-    _OpenThesisToken = openThesisToken;
-    _Expression = expression;
-    _CloseThesisToken = closeThesisToken;
-}
-
-ThesisExp::~ThesisExp()
+StatementSyntax::StatementSyntax()
 {
 }
 
-
-ExpressionSyntax::ExpressionSyntax(SyntaxToken numberToken)
+StatementSyntax::~StatementSyntax()
 {
-    _MainToken = numberToken;
-    _MyKind = SyntaxKind::NumberToken;
 }
 
-ExpressionSyntax::ExpressionSyntax(SyntaxToken UnaryOp, int right)
+StatementSyntax::StatementSyntax(SyntaxToken type, SyntaxToken identifier, SyntaxToken equal, int expIdx)
 {
-    _MainToken = UnaryOp;
-    _MainExpIdx = right;
-    _MyKind = SyntaxKind::UnaryExpression;
+    _MyKind = SyntaxKind::VariableDeclaration;
+    _Token0 = type;
+    _Token1 = identifier;
+    _Token2 = equal;
+    _ExpIdx0 = expIdx;
 }
 
-ExpressionSyntax::ExpressionSyntax(int left, SyntaxToken operatorToken, int right)
+StatementSyntax::StatementSyntax(SyntaxToken identifier, SyntaxToken equal, int expIdx)
 {
-    _MainExpIdx = left;
-    _MainToken = operatorToken;
-    _SubExpIdx = right;
-    _MyKind = SyntaxKind::BinaryExpression;
+    _MyKind = SyntaxKind::AssignStatement;
+    _Token0 = identifier;
+    _Token1 = equal;
+    _ExpIdx0 = expIdx;
+
 }
 
-ExpressionSyntax::ExpressionSyntax(SyntaxToken openThesisToken, int expression, SyntaxToken closeThesisToken)
+StatementSyntax::StatementSyntax(SyntaxToken IfKeyword, int expIdx)
 {
-    _MainToken = openThesisToken;
-    _MainExpIdx = expression;
-    _SubToken = closeThesisToken;
-    _MyKind = SyntaxKind::ThesisExpression;
+    if (IfKeyword._kind == SyntaxKind::IfKeyWord)
+    {
+        _MyKind = SyntaxKind::IfStatement;
+    }
+    else if (IfKeyword._kind == SyntaxKind::PrintKeyWord)
+    {
+        _MyKind = SyntaxKind::PrintStatement;
+    }
+    _Token0 = IfKeyword;
+    _ExpIdx0 = expIdx;
 }
-

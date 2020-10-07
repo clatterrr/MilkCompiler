@@ -8,7 +8,6 @@ public:
 	SyntaxNode();
 	~SyntaxNode();
 
-	virtual SyntaxKind GetKind();
 };
 
 class ExpressionSyntax : public SyntaxNode
@@ -26,53 +25,36 @@ public:
 
 	SyntaxKind _MyKind;
 	int _MyIdx;
-	SyntaxToken _MainToken;
-	SyntaxToken _SubToken;
+	SyntaxToken _Token0;
+	SyntaxToken _Token1;
 	//傻逼链表次次报错，老子不用也罢
 	//ExpressionSyntax* _MainExpression;
-	int _MainExpIdx;
-	SyntaxKind _MainExpKind;
+	int _ExpIdx0;
+	SyntaxKind _ExpKind0;
 	//ExpressionSyntax* _SubExpression;
-	int _SubExpIdx;
-	SyntaxKind _SubExpKind;
+	int _ExpIdx1;
+	SyntaxKind _ExpKind1;
 	int Value;
 };
 
-
-
-//单个数字
-class NumberExp : public ExpressionSyntax
+class StatementSyntax :public SyntaxNode
 {
 public:
-	NumberExp(SyntaxToken numberToken);
-	~NumberExp();
+	StatementSyntax();
+	~StatementSyntax();
+	//VariableDeclaration _Token0 _Token1 _Token2 _ExpIdx0
+	StatementSyntax(SyntaxToken type, SyntaxToken identifier, SyntaxToken equal, int expIdx);
+	//AssginStateMent _Token0 _Token1 _ExpIdx0
+	StatementSyntax(SyntaxToken identifier, SyntaxToken equal, int expIdx);
+	//If print _Token0 _ExpIdx0
+	StatementSyntax(SyntaxToken IfKeyword, int expIdx);
 
-	SyntaxToken _NumberToken;
-};
-
-//加减乘除
-class BinaryExp : public ExpressionSyntax
-{
-public:
-	BinaryExp();
-	BinaryExp(ExpressionSyntax left, SyntaxToken operatorToken,ExpressionSyntax right);
-	void CreateBinaryExp(ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right);
-	~BinaryExp();
-	ExpressionSyntax _Left;
-	SyntaxToken _OperatorToken;
-	ExpressionSyntax _Right;
-	
-};
-
-//括号
-class ThesisExp :public ExpressionSyntax
-{
-public:
-	ThesisExp(SyntaxToken openThesisToken, ExpressionSyntax expression, SyntaxToken closeThesisToken);
-	~ThesisExp();
-	SyntaxToken _OpenThesisToken;
-	ExpressionSyntax _Expression;
-	SyntaxToken _CloseThesisToken;
+	SyntaxKind _MyKind;
+	int _MyIdx;
+	SyntaxToken _Token0;
+	SyntaxToken _Token1;
+	SyntaxToken _Token2;
+	int _ExpIdx0;
 };
 #endif // ! SYNTAXNODE_H
 

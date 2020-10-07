@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Syntax">
       <UniqueIdentifier>{949abbcc-a6bd-443d-b496-e245085f1a87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Symbol">
+      <UniqueIdentifier>{b9349d61-81ea-4240-b45b-47d2fca37896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Symbol">
+      <UniqueIdentifier>{5305bcfd-ee77-41e8-a1d9-399bb55aa1cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="acompiler.cpp">
@@ -42,6 +48,12 @@
     <ClCompile Include="Evaluator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Symbol\SymbolTable.cpp">
+      <Filter>Source Files\Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="Symbol\Symbol.cpp">
+      <Filter>Source Files\Symbol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syntax\SyntaxToken.h">
@@ -61,6 +73,15 @@
     </ClInclude>
     <ClInclude Include="Evaluator.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SymbolTable.h">
+      <Filter>Header Files\Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Syntax\SyntaxKind.h">
+      <Filter>Header Files\Syntax</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\Symbol.h">
+      <Filter>Header Files\Symbol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
